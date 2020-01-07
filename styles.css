@@ -1,0 +1,23 @@
+#people {
+  display: flex;
+  flex-direction: row;
+  font-size: 30px;
+}
+
+#films {
+  display: flex;
+  flex-direction: column;
+  font-size: 30px;
+}
+
+#starships {
+  display: flex;
+  flex-direction: column;
+  font-size: 30px;
+}
+
+#vehicles {
+  display: flex;
+  flex-direction: row;
+  font-size: 30px;
+}
