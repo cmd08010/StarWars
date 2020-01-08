@@ -1,37 +1,3 @@
-// const people = document.querySelector("#people")
-// const films = document.querySelector("#films")
-// const starships = document.querySelector("#startships")
-// const vehicles = document.querySelector("#vehicles")
-
-// async function getStarWarsData() {
-//   const peopleDataPromise = axios
-//     .get(`http://star-cors.herokuapp.com/people`)
-//     .then(response => response.data)
-
-//   console.log(peopleDataPromise)
-//   const filmsData = axios
-//     .get(`http://star-cors.herokuapp.com/films`)
-//     .then(response => response.data)
-
-//   const starshipsData = axios
-//     .get(`http://star-cors.herokuapp.com/starships`)
-//     .then(response => response.data)
-
-//   const vehiclesData = axios
-//     .get(`http://star-cors.herokuapp.com/vehicles`)
-//     .then(response => response.data)
-
-//   await Promise.all(peopleDataPromise, filmsData, starshipsData, vehiclesData)
-
-//   console.log("test")
-
-//   //Promise.all()
-
-//   // people.innerHTML += `<p><li>${peopleDataPromise}</li></p>`
-// }
-
-// getStarWarsData()
-
 console.log("live")
 const content = {
   "#people": [],
@@ -39,7 +5,7 @@ const content = {
   "#starships": [],
   "#vehicles": []
 }
-//console.log(content, "test")
+
 const loadData = async () => {
   const peoplePromise = axios
     .get("http://star-cors.herokuapp.com/people")
@@ -63,25 +29,58 @@ const loadData = async () => {
   content["#films"] = films
   content["#starships"] = starships
   content["#vehicles"] = vehicles
-  //console.log(content)
-  renderPeople(content["#people"])
+
+  renderData(content["#people"], "#people")
+  renderData(content["#films"], "#films")
+  renderData(content["#starships"], "#starships")
+  renderData(content["#vehicles"], "#vehicles")
 }
-loadData()
-const renderPeople = ({ results }) => {
+
+//loadData()
+const renderData = ({ results }, querySelector) => {
+  // console.log(content["people"].length)
   let names = results
-  console
-    .log(results)
     .map(val => {
-      // console.log(val)
+      //console.log(val)
+      let keys = Object.keys(val)
+      let values = Object.values(val)
+      //console.log(keys)
+      console.log(values)
       return `
-    <li>${val.name}</li>
+
+    <div class="card border-info mb-3"  style="width: 18rem;">
+<div class="card-header">${values[0]}
+
+</div>
+  <div class="card-body">
+  <ol><b>${keys[1]}</b>: ${values[1]}</ol>
+  <ol><b>${keys[5]}</b>: ${values[5]}</ol>
+  <ol><b>${keys[3]}</b>: ${values[3]}</ol>
+  <ol><b>${keys[4]}</b>: ${values[4]}</ol>
+    </p>
+
+  </div>
+</div>
     `
     })
     .join("")
   names = `
-  <h4>People</h4>
+
   <ul>${names}</ul>`
-  const container = document.querySelector("#people")
+  const container = document.querySelector(querySelector)
   //const peopleDiv = document.createElement(div)
-  container.innerHTML = names
+  container.innerHTML += names
 }
+
+const filterData = () => {
+  ;`<input type="text" id="find" onkeyup= "function">
+
+  `
+}
+loadData()
+
+//Add event listener for typing the name
+//might add a button to hit search
+//need to create function that uses loaddata as a callback
+//--- in that function want to grab the input text in the inputbox and use that to load data where the input text matches
+//addEventListener("keyup", loadData())
