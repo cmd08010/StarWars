@@ -1,102 +1,65 @@
 console.log("live")
 
-// form.addEventListener("click", e => console.log(e.target))
-// const peopleDiv = document.getElementById("people")
-// peopleDiv.addEventListener("click", e => {
-//   console.log(e.target)
-// })
+//**possible option for accessing data out of the functions */
+//function createState() {
+//   const state = {}
+//   return {
+//     set: (val) => {
+//       state[val] = val
+// return state    }
+//   }
+// }
 
-// const filmsDiv = document.getElementById("films")
-// filmsDiv.addEventListener("click", e => {
-//   console.log(e.target)
-// })
+const state = {}
+let peopleClickCount = 1
+let filmsClickCount = 1
+let starshipsClickCount = 1
+let vehiclesClickCount = 1
 
-const content = {
-  "#people": [],
-  "#films": [],
-  "#starships": [],
-  "#vehicles": []
-}
-
-const loadData = () => {
-  const peoplePromise = axios
-    .get("http://star-cors.herokuapp.com/people")
-    .then(response => response.data)
-  const filmsPromise = axios
-    .get("http://star-cors.herokuapp.com/films")
-    .then(response => response.data)
-  const starshipsPromise = axios
-    .get("http://star-cors.herokuapp.com/starships")
-    .then(response => response.data)
-  const vehiclesPromise = axios
-    .get("http://star-cors.herokuapp.com/vehicles")
-    .then(response => response.data)
-
-  Promise.all([
-    peoplePromise, // 5 seconds
-    filmsPromise, // 3 seconds
-    starshipsPromise, // 1 second
-    vehiclesPromise // 8 seconds
-  ]).then(resultArr => {
-    const [people, films, starships, vehicles] = resultArr
-    // console.dir(resultArr)
-    content["#people"] = people
-    content["#films"] = films
-    content["#starships"] = starships
-    content["#vehicles"] = vehicles
-
-    renderData(content["#people"], "#people")
-    renderData(content["#films"], "#films")
-    renderData(content["#starships"], "#starships")
-    renderData(content["#vehicles"], "#vehicles")
+const loadPeopleData = () => {
+  axios.get("http://star-cors.herokuapp.com/people").then(response => {
+    let data = response.data
+    state.peopleData = data
+    renderData(data, ".people-cards")
   })
 }
-loadData()
 
-const renderData = ({ results }, querySelector) => {
-  const inputValue = document.getElementById("search").value
-  if (inputValue) {
-    results.filter(result => {
-      //console.log(result)
-      if (result.name === inputValue) {
-        //  console.log(result)
+const loadFilmsData = () => {
+  axios.get("http://star-cors.herokuapp.com/films").then(response => {
+    let data = response.data
+    state.filmsData = data
+    renderData(data, ".films-cards")
+  })
+}
 
-        let keys = Object.keys(result)
-        let values = Object.values(result)
-        console.log(keys)
-        console.log(values)
-        const container = document.querySelector(querySelector)
-        container.innerHTML = `
-        <h2>People</h2>
-        <form>
-          <input type="text" id="search" />
-        </form>
+const loadStarshipsData = () => {
+  axios.get("http://star-cors.herokuapp.com/starships").then(response => {
+    let data = response.data
+    state.starshipsData = data
+    renderData(data, ".starships-cards")
+  })
+}
 
-        <div class="card border-info mb-3"  style="width: 18rem;">
-      <div class="card-header">${values[0]}
+const loadVehiclesData = () => {
+  axios.get("http://star-cors.herokuapp.com/vehicles").then(response => {
+    let data = response.data
+    state.vehiclesData = data
+    renderData(data, ".vehicles-cards")
+  })
+}
 
-      </div>
-      <div class="card-body">
-      <ol><b>${keys[1]}</b>: ${values[1]}</ol>
-      <ol><b>${keys[5]}</b>: ${values[5]}</ol>
-      <ol><b>${keys[3]}</b>: ${values[3]}</ol>
-      <ol><b>${keys[4]}</b>: ${values[4]}</ol>
-        </p>
+const renderData = (obj, querySelector) => {
+  let results = obj.results
+  const container = document.querySelector(querySelector)
 
-      </div>
-      </div>`
-      }
-    })
-  } else {
-    let names = results
-      .map(val => {
-        //console.log(val)
-        let keys = Object.keys(val)
-        let values = Object.values(val)
-        //console.log(keys)
-        // console.log(values)
-        return `
+  container.innerHTML = `
+  <div>Showing ${results.length} of ${obj.count} entries</div>`
+  let names = results
+    .map(val => {
+      let keys = Object.keys(val)
+      let values = Object.values(val)
 
+      return `
     <div class="card border-info mb-3"  style="width: 18rem;">
       <div class="card-header">${values[0]}
 
@@ -111,16 +74,98 @@ const renderData = ({ results }, querySelector) => {
         </div>
     </div>
     `
-      })
-      .join("")
-    names = `
+    })
+    .join("")
+  names = `
+  <div>${names}</div>`
 
-  <ul>${names}</ul>`
-    const container = document.querySelector(querySelector)
-    //const peopleDiv = document.createElement(div)
-    container.innerHTML += names
+  container.innerHTML += names
+}
+
+const searchData = (category, input) => {
+  console.log(input)
+  axios
+    .get(`https://swapi.co/api/${category}/?search=${input}`)
+    .then(response => {
+      let data = response.data
+      state.peopleData = data
+      //debugger
+      renderData(data, `.${category}-cards`)
+      console.log(data)
+    })
+}
+
+const loadMoreData = category => {
+  console.log(category)
+  if (category === "people") {
+    peopleClickCount++
+    console.log(peopleClickCount)
+    axios
+      .get(`https://swapi.co/api/${category}/?page=${peopleClickCount}`)
+      .then(response => {
+        let data = response.data
+        state.peopleData = data
+        //debugger
+        renderData(data, `.${category}-cards`)
+        console.log(data)
+      })
+      .catch(err => {
+        alert(`No more ${category}`)
+      })
+  }
+
+  if (category === "films") {
+    filmsClickCount++
+    console.log(filmsClickCount)
+    axios
+      .get(`https://swapi.co/api/${category}/?page=${filmsClickCount}`)
+      .then(response => {
+        let data = response.data
+        state.peopleData = data
+        //debugger
+        renderData(data, `.${category}-cards`)
+        console.log(data)
+      })
+      .catch(err => {
+        alert(`No more ${category}`)
+      })
+  }
+
+  if (category === "starships") {
+    starshipsClickCount++
+    console.log(starshipsClickCount)
+    axios
+      .get(`https://swapi.co/api/${category}/?page=${starshipsClickCount}`)
+      .then(response => {
+        let data = response.data
+        state.peopleData = data
+        //debugger
+        renderData(data, `.${category}-cards`)
+        console.log(data)
+      })
+      .catch(err => {
+        alert(`No more ${category}`)
+      })
+  }
+  if (category === "vehicles") {
+    vehiclesClickCount++
+    console.log(vehiclesClickCount)
+    axios
+      .get(`https://swapi.co/api/${category}/?page=${vehiclesClickCount}`)
+      .then(response => {
+        let data = response.data
+        state.peopleData = data
+        //debugger
+        renderData(data, `.${category}-cards`)
+        console.log(data)
+      })
+      .catch(err => {
+        alert(`No more ${category}`)
+      })
   }
 }
 
-const form = document.querySelector(".data")
-form.addEventListener("keyup", loadData)
+loadPeopleData()
+loadFilmsData()
+loadStarshipsData()
+loadVehiclesData()

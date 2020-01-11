@@ -37,22 +37,82 @@
       <div id="people">
         <h2>People</h2>
         <form>
-          <input type="text" id="search" />
+          <input
+            type="text"
+            name="search-people"
+            onkeyup="searchData('people', value)"
+          />
+          <button
+            type="button"
+            class="btn btn-info"
+            value="morePeople"
+            onclick="loadMoreData('people')"
+          >
+            Load More
+          </button>
         </form>
+        <div class="people-cards"></div>
       </div>
 
       <div id="films">
         <h2>Films</h2>
-        <input type="text" name="searchBox" />
+        <form>
+          <input
+            type="text"
+            name="search-films"
+            onkeyup="searchData('films', value)"
+          />
+          <button
+            type="button"
+            class="btn btn-info"
+            value="moreFilms"
+            onclick="loadMoreData('films')"
+          >
+            Load More
+          </button>
+        </form>
+
+        <div class="films-cards"></div>
       </div>
 
       <div id="starships">
         <h2>Starships</h2>
-        <input type="text" name="searchBox" />
+        <form>
+          <input
+            type="text"
+            name="search-starships"
+            onkeyup="searchData('starships',value)"
+          />
+          <button
+            type="button"
+            class="btn btn-info"
+            id="moreStarships"
+            onclick="loadMoreData('starships')"
+          >
+            Load More
+          </button>
+        </form>
+        <div class="starships-cards"></div>
       </div>
+
       <div id="vehicles">
         <h2>Vehicles</h2>
-        <input type="text" name="searchBox" />
+        <form>
+          <input
+            type="text"
+            name="search-vehicles"
+            onkeyup="searchData('vehicles', value)"
+          />
+          <button
+            type="button"
+            class="btn btn-info"
+            id="moreVehicles"
+            onclick="loadMoreData('vehicles')"
+          >
+            Load More
+          </button>
+        </form>
+        <div class="vehicles-cards"></div>
       </div>
     </div>
   </body>
